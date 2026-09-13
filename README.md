@@ -9,8 +9,8 @@ Terminal-first, editor-integrated, desktop-wrapped. Bring your own key — your 
 [![License: MIT](https://img.shields.io/badge/license-MIT-FF6A00?style=flat-square)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-typed-3178C6?style=flat-square)](https://www.typescript.org)
 [![Bun](https://img.shields.io/badge/runtime-Bun-F472B6?style=flat-square)](https://bun.sh)
-[![Stars](https://img.shields.io/github/stars/dxn1-UBUNTU/sonderr?style=flat-square&color=FF6A00)](https://github.com/dxn1-UBUNTU/sonderr/stargazers)
-[![PRs welcome](https://img.shields.io/badge/PRs-welcome-2EA043?style=flat-square)](https://github.com/dxn1-UBUNTU/sonderr/pulls)
+[![Stars](https://img.shields.io/github/stars/DXN1-termux/sonderr?style=flat-square&color=FF6A00)](https://github.com/DXN1-termux/sonderr/stargazers)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-2EA043?style=flat-square)](https://github.com/DXN1-termux/sonderr/pulls)
 
 [Install](#install) · [Why Sonderr](#why-sonderr) · [Features](#features) · [Providers](#providers) · [Architecture](#architecture) · [Configuration](#configuration) · [Development](#development) · [License](#license)
 
@@ -69,7 +69,7 @@ Before reporting done, Sonderr runs verification checklists. It catches its own 
 ### Option 1: Global command (recommended)
 
 ```bash
-git clone https://github.com/dxn1-UBUNTU/sonderr.git
+git clone https://github.com/DXN1-termux/sonderr.git
 cd sonderr
 ./scripts/install.sh
 ```
@@ -91,7 +91,7 @@ export PATH="$HOME/.local/bin:$PATH"
 Requires [Bun](https://bun.sh) 1.3+.
 
 ```bash
-git clone https://github.com/dxn1-UBUNTU/sonderr.git
+git clone https://github.com/DXN1-termux/sonderr.git
 cd sonderr
 bun install
 bun run dev
