@@ -138,56 +138,6 @@ const layer = Layer.effect(
         },
         hints: [],
       }
-      commands["hive"] = {
-        name: "hive",
-        description: "hive swarm manager",
-        source: "command",
-        get template() {
-          return bridge.promise(
-            Effect.gen(function* () {
-              const cfg = yield* config.get()
-              const flags = yield* RuntimeFlags.Service
-              const enabled = flags.experimentalHive && process.env["SONDERR_HIVE_MODE"] !== "off"
-              const lines: string[] = []
-              lines.push("# Hive Swarm")
-              lines.push("")
-              lines.push(`Status: ${enabled ? "enabled" : "disabled"}`)
-              lines.push("")
-              lines.push("## Swarm Agents")
-              lines.push("")
-              lines.push("| Agent | Role | Description |")
-              lines.push("|---|---|---|")
-              const swarmAgents = [
-                { name: "researcher", role: "Research", desc: "Investigate topics and gather evidence" },
-                { name: "coder", role: "Implementation", desc: "Write production code and fix bugs" },
-                { name: "reviewer", role: "Quality", desc: "Review code for bugs and issues" },
-                { name: "tester", role: "Testing", desc: "Write and run tests" },
-                { name: "documenter", role: "Docs", desc: "Write documentation and guides" },
-                { name: "debugger", role: "Debugging", desc: "Diagnose and fix bugs" },
-                { name: "architect", role: "Design", desc: "Design systems and plan implementations" },
-              ]
-              for (const agent of swarmAgents) {
-                lines.push(`| ${agent.name} | ${agent.role} | ${agent.desc} |`)
-              }
-              lines.push("")
-              lines.push("## Hive Bus Tools")
-              lines.push("")
-              lines.push("- `hive_send`: Publish memos to the swarm bus")
-              lines.push("- `hive_recall`: Read memos from the swarm bus")
-              lines.push("")
-              lines.push("## Setup")
-              lines.push("")
-              lines.push("Enable hive mode with:")
-              lines.push("```")
-              lines.push("export SONDERR_EXPERIMENTAL_HIVE=1")
-              lines.push("export SONDERR_HIVE_MODE=auto")
-              lines.push("```")
-              return lines.join("\n")
-            }),
-          )
-        },
-        hints: [],
-      }
       // sonderr_change end
 
       // sonderr_change start - defer partial overrides until all command sources are registered
