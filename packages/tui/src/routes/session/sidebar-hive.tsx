@@ -228,7 +228,7 @@ export function HiveSidebar(props: { sessionID: string; overlay?: boolean }) {
               <box paddingBottom={1}>
                 <text fg={asciiColor()}>
                   {ASCII_HIVE.split("\n").map((line, i) => (
-                    <text fg={i === 0 ? ORANGE_LIGHT : ORANGE}>{line}</text>
+                    <span style={{ fg: i === 0 ? ORANGE_LIGHT : ORANGE }}>{line}</span>
                   ))}
                 </text>
               </box>
