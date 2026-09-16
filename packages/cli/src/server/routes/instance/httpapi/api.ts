@@ -45,6 +45,7 @@ import { SessionImportApi } from "@/sonderr/server/httpapi/groups/session-import
 import { SuggestionApi } from "@/sonderr/server/httpapi/groups/suggestion"
 import { TelemetryApi } from "@/sonderr/server/httpapi/groups/telemetry"
 import { MemoryApi } from "@/sonderr/server/httpapi/groups/memory" // sonderr_change
+import { HiveGuiSetupApi } from "@/sonderr/hive/gui-setup" // sonderr_change
 // sonderr_change end
 import { makeApi } from "@sonderr/protocol/api"
 import { LocationMiddleware } from "@sonderr/server/location"
@@ -115,6 +116,7 @@ export const InstanceHttpApi = HttpApi.make("sonderr-instance")
   .addHttpApi(SuggestionApi)
   .addHttpApi(TelemetryApi)
   .addHttpApi(MemoryApi)
+  .addHttpApi(HiveGuiSetupApi)
   // sonderr_change end
   .middleware(SchemaErrorMiddleware)
 

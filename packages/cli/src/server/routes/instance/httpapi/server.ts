@@ -3,6 +3,7 @@ import { HttpApiBuilder, OpenApi } from "effect/unstable/httpapi"
 import { HttpClient, HttpMiddleware, HttpRouter, HttpServer, HttpServerResponse } from "effect/unstable/http"
 import * as Socket from "effect/unstable/socket/Socket"
 import { FSUtil } from "@sonderr/core/fs-util"
+import path from "path"
 import { EffectFlock } from "@sonderr/core/util/effect-flock" // sonderr_change
 import * as Observability from "@sonderr/core/observability"
 import { Account } from "@/account/account"
@@ -214,6 +215,21 @@ const docRoute = HttpRouter.use((router) => router.add("GET", "/doc", () => Effe
   Layer.provide(authOnlyRouterLayer),
 )
 
+// sonderr_change start - serve hive GUI setup UI
+const hiveGuiSetupRoute = HttpRouter.use((router) =>
+  Effect.gen(function* () {
+    const fs = yield* FSUtil.Service
+    const file = path.join(import.meta.dirname, "../../../sonderr/hive/gui-setup-ui/index.html")
+    yield* router.add("GET", "/hive-gui-setup", () =>
+      fs.readFile(file).pipe(
+        Effect.map((body) => HttpServerResponse.raw(body, { headers: new Headers({ "content-type": "text/html" }) })),
+        Effect.catchReason("PlatformError", "NotFound", () => Effect.succeed(notFound())),
+      ),
+    )
+  }),
+).pipe(Layer.provide(authOnlyRouterLayer))
+// sonderr_change end
+
 const uiRoute = HttpRouter.use((router) =>
   Effect.gen(function* () {
     const fs = yield* FSUtil.Service
@@ -306,6 +322,7 @@ export function createRoutes(
     instanceRoutes,
     serverRoutes,
     docRoute,
+    hiveGuiSetupRoute,
     uiRoute,
   ).pipe(
     Layer.provide([

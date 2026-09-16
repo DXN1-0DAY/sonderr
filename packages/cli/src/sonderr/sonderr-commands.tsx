@@ -6,6 +6,7 @@
  */
 
 import { createMemo } from "solid-js"
+import open from "open"
 import { useBindings } from "@tui/keymap"
 import { useSync } from "@tui/context/sync"
 import { useRoute } from "@tui/context/route"
@@ -87,6 +88,24 @@ export function registerSonderrCommands(useSDK: () => UseSDK) {
           // Everything ready — navigate to full-screen chat view
           route.navigate({ type: "sonderrclaw" })
           dialog.clear()
+        },
+      },
+
+      // /hive-gui-setup command
+      {
+        name: "sonderr.hive-gui-setup",
+        title: "Hive GUI Setup",
+        desc: "Open the hive GUI setup in a browser",
+        category: "Hive",
+        slashName: "hive-gui-setup",
+        run: async () => {
+          try {
+            const url = "http://localhost:4096/hive-gui-setup"
+            await open(url).catch(() => undefined)
+            toast.show({ message: `Opening hive GUI setup at ${url}`, variant: "success" })
+          } catch (error) {
+            dialog.replace(() => <DialogAlert title="Error" message={`Failed to open hive GUI setup: ${error}`} />)
+          }
         },
       },
 

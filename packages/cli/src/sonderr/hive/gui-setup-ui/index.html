@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hive GUI Setup — Sonderr</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --hive-gold: #F5A623;
+      --amber: #FF8C00;
+      --honey: #F6C944;
+      --pollen: #FFD166;
+      --wax: #FFE8A0;
+      --combo-light: #FFF8E1;
+      --bee-brown: #6B3A1F;
+      --bee-black: #1A0F05;
+      --stripe-dark: #2C1A05;
+      --queen-purple: #7B3FA0;
+      --nectar-blue: #4A90D9;
+      --gradient-honey: linear-gradient(135deg, #F5A623 0%, #FF8C00 100%);
+      --gradient-comb: linear-gradient(180deg, #FFE8A0 0%, #F6C944 100%);
+      --font-heading: 'Montserrat', 'Segoe UI', sans-serif;
+      --font-body: 'Inter', 'Segoe UI', sans-serif;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --shadow-md: 0 4px 8px rgba(107, 58, 31, 0.10);
+      --shadow-lg: 0 8px 24px rgba(107, 58, 31, 0.14);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--combo-light);
+      color: var(--bee-brown);
+      min-height: 100vh;
+    }
+
+    .honeycomb-bg {
+      background-color: var(--combo-light);
+      background-image:
+        radial-gradient(circle farthest-side at 0% 50%, transparent 47%, rgba(246, 201, 68, 0.08) 49%, rgba(246, 201, 68, 0.08) 51%, transparent 53%),
+        radial-gradient(circle farthest-side at 100% 50%, transparent 47%, rgba(246, 201, 68, 0.08) 49%, rgba(246, 201, 68, 0.08) 51%, transparent 53%);
+      background-size: 60px 104px;
+      background-position: 0 0, 30px 52px;
+    }
+
+    .app {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--honey);
+    }
+
+    .header h1 {
+      font-family: var(--font-heading);
+      font-size: 28px;
+      font-weight: 800;
+      background: var(--gradient-honey);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: white;
+      padding: 4px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    .tab {
+      padding: 10px 20px;
+      border: none;
+      background: transparent;
+      color: var(--bee-brown);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .tab:hover {
+      background: var(--wax);
+    }
+
+    .tab.active {
+      background: var(--gradient-honey);
+      color: var(--bee-black);
+      font-weight: 600;
+    }
+
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+      color: var(--bee-black);
+    }
+
+    .card h3 {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--bee-brown);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--gradient-honey);
+      color: var(--bee-black);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--bee-brown);
+      border: 1px solid var(--honey);
+    }
+
+    .btn-secondary:hover {
+      background: var(--wax);
+    }
+
+    .btn-danger {
+      background: #fee;
+      color: #c00;
+    }
+
+    .btn-danger:hover {
+      background: #fcc;
+    }
+
+    .input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #e0d6c2;
+      border-radius: var(--radius-md);
+      font-family: var(--font-body);
+      font-size: 14px;
+      background: white;
+      color: var(--bee-brown);
+      transition: border-color 0.2s ease;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--hive-gold);
+    }
+
+    .label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 6px;
+      color: var(--bee-brown);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      border-left: 4px solid var(--hive-gold);
+    }
+
+    .stat-card .value {
+      font-family: var(--font-heading);
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--bee-black);
+    }
+
+    .stat-card .label {
+      font-size: 13px;
+      color: var(--bee-brown);
+      margin-top: 4px;
+    }
+
+    .provider-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .provider-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      border: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .provider-card:hover {
+      border-color: var(--honey);
+      transform: translateY(-2px);
+    }
+
+    .provider-card .name {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .provider-card .meta {
+      font-size: 13px;
+      color: var(--bee-brown);
+      margin-bottom: 12px;
+    }
+
+    .provider-card .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .agent-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-md);
+      border: 2px solid var(--honey);
+    }
+
+    .agent-card .name {
+      font-family: var(--font-heading);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .agent-card .role {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--wax);
+      color: var(--bee-brown);
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(26, 15, 5, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 24px;
+    }
+
+    .modal {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal h2 {
+      font-family: var(--font-heading);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: #e6f7e6;
+      color: #2e7d32;
+    }
+
+    .badge-warning {
+      background: #fff3e0;
+      color: #e65100;
+    }
+
+    .badge-error {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--bee-brown);
+    }
+
+    .empty-state h3 {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--bee-black);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      transition: transform 0.3s ease;
+      z-index: 2000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      .app {
+        padding: 16px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="honeycomb-bg">
+    <div class="app">
+      <header class="header">
+        <h1>🐝 Hive GUI Setup</h1>
+        <div class="header-actions">
+          <span id="connection-status" class="badge badge-success">Connected</span>
+          <button class="btn btn-secondary" onclick="refreshAll()">Refresh</button>
+        </div>
+      </header>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+        <button class="tab" role="tab" data-tab="pool" onclick="switchTab('pool')">API Pool</button>
+        <button class="tab" role="tab" data-tab="agents" onclick="switchTab('agents')">Agents</button>
+        <button class="tab" role="tab" data-tab="rotation" onclick="switchTab('rotation')">Rotation</button>
+        <button class="tab" role="tab" data-tab="caps" onclick="switchTab('caps')">Token Caps</button>
+      </div>
+
+      <!-- Dashboard -->
+      <div id="tab-dashboard" class="panel active">
+        <div class="grid grid-3" style="margin-bottom: 24px;">
+          <div class="stat-card">
+            <div class="value" id="stat-pool-count">0</div>
+            <div class="label">Pool Entries</div>
+          </div>
+          <div class="stat-card">
+            <div class="value" id="stat-agent-count">0</div>
+            <div class="label">Agent Assignments</div>
+          </div>
+          <div class="stat-card">
+            <div class="value" id="stat-rotation">round-robin</div>
+            <div class="label">Rotation Mode</div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Quick Actions</h2>
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="switchTab('pool'); openAddProviderModal()">+ Add API</button>
+            <button class="btn btn-secondary" onclick="switchTab('agents')">Assign Agents</button>
+            <button class="btn btn-secondary" onclick="switchTab('rotation')">Change Rotation</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- API Pool -->
+      <div id="tab-pool" class="panel">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>API Pool</h2>
+            <button class="btn btn-primary" onclick="openAddProviderModal()">+ Add API</button>
+          </div>
+          <div id="provider-list" class="provider-grid">
+            <div class="empty-state">
+              <h3>No APIs configured</h3>
+              <p>Add your first API to get started.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Agents -->
+      <div id="tab-agents" class="panel">
+        <div class="card">
+          <h2>Agent Assignments</h2>
+          <p style="color: var(--bee-brown); margin-bottom: 20px;">Assign APIs to swarm agents. Each agent can use a pool entry or a direct override.</p>
+          <div id="agent-list" class="agent-grid">
+            <div class="empty-state">
+              <h3>No assignments yet</h3>
+              <p>Add APIs to the pool first, then assign them here.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rotation -->
+      <div id="tab-rotation" class="panel">
+        <div class="card">
+          <h2>Rotation Mode</h2>
+          <p style="color: var(--bee-brown); margin-bottom: 20px;">Choose how the hive selects APIs from the pool.</p>
+          <div class="form-group">
+            <label class="label">Mode</label>
+            <select id="rotation-mode" class="input" onchange="updateRotationMode()">
+              <option value="round-robin">Round Robin</option>
+              <option value="random">Random</option>
+              <option value="sticky">Sticky</option>
+              <option value="failover">Failover</option>
+            </select>
+          </div>
+          <div class="card" style="background: var(--combo-light); padding: 16px;">
+            <h3>How it works</h3>
+            <ul style="padding-left: 20px; line-height: 1.8;">
+              <li><strong>Round Robin:</strong> Cycles through pool entries in order.</li>
+              <li><strong>Random:</strong> Picks a random enabled entry each time.</li>
+              <li><strong>Sticky:</strong> Pins to the first successful entry for the session.</li>
+              <li><strong>Failover:</strong> Tries entries in order; advances only on failure.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Token Caps -->
+      <div id="tab-caps" class="panel">
+        <div class="card">
+          <h2>Global Token Caps</h2>
+          <p style="color: var(--bee-brown); margin-bottom: 20px;">Set default token limits for all agents and pool entries.</p>
+          <div class="grid grid-2">
+            <div class="form-group">
+              <label class="label">Max Input Tokens (0 = unlimited)</label>
+              <input type="number" id="cap-max-input" class="input" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="label">Max Output Tokens (0 = unlimited)</label>
+              <input type="number" id="cap-max-output" class="input" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="label">Max Total Tokens (0 = unlimited)</label>
+              <input type="number" id="cap-max-total" class="input" value="0" min="0">
+            </div>
+            <div class="form-group">
+              <label class="label">Warning Threshold (0–1)</label>
+              <input type="number" id="cap-warn-at" class="input" value="0.8" min="0" max="1" step="0.1">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="saveTokenCaps()">Save Token Caps</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Provider Modal -->
+  <div id="add-provider-modal" class="modal-overlay hidden" onclick="closeModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <h2>Add API to Pool</h2>
+      <div class="form-group">
+        <label class="label">Provider</label>
+        <select id="provider-id" class="input" onchange="onProviderChange()">
+          <option value="openai">OpenAI</option>
+          <option value="anthropic">Anthropic</option>
+          <option value="google">Google</option>
+          <option value="deepseek">DeepSeek</option>
+          <option value="openrouter">OpenRouter</option>
+          <option value="github-copilot">GitHub Copilot</option>
+          <option value="vercel">Vercel</option>
+          <option value="amazon-bedrock">Amazon Bedrock</option>
+          <option value="google-vertex">Google Vertex</option>
+          <option value="anaconda-desktop">Anaconda Desktop</option>
+          <option value="custom">Custom...</option>
+        </select>
+      </div>
+      <div class="form-group hidden" id="custom-provider-group">
+        <label class="label">Custom Provider ID</label>
+        <input type="text" id="custom-provider-id" class="input" placeholder="my-api">
+      </div>
+      <div class="form-group">
+        <label class="label">Model ID</label>
+        <input type="text" id="model-id" class="input" placeholder="gpt-4o" required>
+      </div>
+      <div class="form-group">
+        <label class="label">API Key</label>
+        <input type="password" id="api-key" class="input" placeholder="sk-..." required>
+      </div>
+      <div class="form-group">
+        <label class="label">Base URL (optional)</label>
+        <input type="text" id="base-url" class="input" placeholder="https://api.openai.com/v1">
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeAddProviderModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="addProvider()">Add to Pool</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="toast"></div>
+
+  <script>
+    // -------------------------------------------------------------------------
+    // State
+    // -------------------------------------------------------------------------
+    let state = {
+      pool: [],
+      assignments: [],
+      rotationMode: 'round-robin',
+      tokenCap: { maxInput: 0, maxOutput: 0, maxTotal: 0, warnAt: 0.8 },
+    }
+    let sseConnection = null
+
+    // -------------------------------------------------------------------------
+    // API client
+    // -------------------------------------------------------------------------
+    const API_BASE = window.location.origin
+    const AUTH_TOKEN = localStorage.getItem('hive_gui_auth') || ''
+
+    async function api(path, options = {}) {
+      const res = await fetch(`${API_BASE}${path}`, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': AUTH_TOKEN,
+          ...options.headers,
+        },
+      })
+      if (res.status === 401) {
+        showToast('Authentication required', 'error')
+        return null
+      }
+      if (res.status === 204) return null
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ message: res.statusText }))
+        throw new Error(err.message || `HTTP ${res.status}`)
+      }
+      return res.json()
+    }
+
+    // -------------------------------------------------------------------------
+    // Tabs
+    // -------------------------------------------------------------------------
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tabName))
+      document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === `tab-${tabName}`))
+    }
+
+    // -------------------------------------------------------------------------
+    // Toast
+    // -------------------------------------------------------------------------
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast')
+      toast.textContent = message
+      toast.style.background = type === 'error' ? '#c62828' : type === 'success' ? '#2e7d32' : 'var(--bee-black)'
+      toast.classList.add('show')
+      setTimeout(() => toast.classList.remove('show'), 3000)
+    }
+
+    // -------------------------------------------------------------------------
+    // Modal
+    // -------------------------------------------------------------------------
+    function openAddProviderModal() {
+      document.getElementById('add-provider-modal').classList.remove('hidden')
+    }
+
+    function closeAddProviderModal() {
+      document.getElementById('add-provider-modal').classList.add('hidden')
+    }
+
+    function closeModal(event) {
+      if (event.target === event.currentTarget) closeAddProviderModal()
+    }
+
+    // -------------------------------------------------------------------------
+    // Provider CRUD
+    // -------------------------------------------------------------------------
+    async function loadPool() {
+      try {
+        const data = await api('/hive-gui-setup')
+        if (!data) return
+        state.pool = data.pool || []
+        state.assignments = data.assignments || []
+        state.rotationMode = data.rotationMode || 'round-robin'
+        state.tokenCap = data.globalTokenCap || state.tokenCap
+        renderAll()
+      } catch (err) {
+        showToast(`Failed to load: ${err.message}`, 'error')
+      }
+    }
+
+    async function addProvider() {
+      const providerSelect = document.getElementById('provider-id')
+      const providerID = providerSelect.value === 'custom' ? document.getElementById('custom-provider-id').value.trim() : providerSelect.value
+      const modelID = document.getElementById('model-id').value.trim()
+      const apiKey = document.getElementById('api-key').value.trim()
+      const baseUrl = document.getElementById('base-url').value.trim()
+
+      if (!providerID || !modelID || !apiKey) {
+        showToast('Provider, model, and API key are required', 'error')
+        return
+      }
+
+      try {
+        const entry = {
+          id: `pool_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+          providerID,
+          modelID,
+          auth: { type: 'api', key: apiKey, metadata: baseUrl ? { baseUrl } : {} },
+          enabled: true,
+          weight: 1,
+          tags: [],
+        }
+        await api('/hive-gui-setup/pool', { method: 'POST', body: JSON.stringify(entry) })
+        showToast('API added to pool', 'success')
+        closeAddProviderModal()
+        loadPool()
+      } catch (err) {
+        showToast(`Failed to add: ${err.message}`, 'error')
+      }
+    }
+
+    async function deleteProvider(id) {
+      if (!confirm('Remove this API from the pool?')) return
+      try {
+        await api(`/hive-gui-setup/pool/${encodeURIComponent(id)}`, { method: 'DELETE' })
+        showToast('API removed', 'success')
+        loadPool()
+      } catch (err) {
+        showToast(`Failed to remove: ${err.message}`, 'error')
+      }
+    }
+
+    function onProviderChange() {
+      const isCustom = document.getElementById('provider-id').value === 'custom'
+      document.getElementById('custom-provider-group').classList.toggle('hidden', !isCustom)
+    }
+
+    // -------------------------------------------------------------------------
+    // Agent Assignment
+    // -------------------------------------------------------------------------
+    async function assignAgent(agentName, poolEntryID) {
+      try {
+        const assignment = { agent: agentName, poolEntryID }
+        await api('/hive-gui-setup/assignments', { method: 'POST', body: JSON.stringify(assignment) })
+        showToast(`Assigned ${agentName}`, 'success')
+        loadPool()
+      } catch (err) {
+        showToast(`Failed to assign: ${err.message}`, 'error')
+      }
+    }
+
+    async function unassignAgent(agentName) {
+      try {
+        await api(`/hive-gui-setup/assignments/${encodeURIComponent(agentName)}`, { method: 'DELETE' })
+        showToast(`Unassigned ${agentName}`, 'success')
+        loadPool()
+      } catch (err) {
+        showToast(`Failed to unassign: ${err.message}`, 'error')
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Rotation Mode
+    // -------------------------------------------------------------------------
+    async function updateRotationMode() {
+      const mode = document.getElementById('rotation-mode').value
+      try {
+        await api('/hive-gui-setup/rotation', {
+          method: 'PUT',
+          body: JSON.stringify({ mode }),
+        })
+        state.rotationMode = mode
+        showToast(`Rotation mode: ${mode}`, 'success')
+      } catch (err) {
+        showToast(`Failed to update: ${err.message}`, 'error')
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Token Caps
+    // -------------------------------------------------------------------------
+    async function saveTokenCaps() {
+      const cap = {
+        maxInput: parseInt(document.getElementById('cap-max-input').value) || 0,
+        maxOutput: parseInt(document.getElementById('cap-max-output').value) || 0,
+        maxTotal: parseInt(document.getElementById('cap-max-total').value) || 0,
+        warnAt: parseFloat(document.getElementById('cap-warn-at').value) || 0.8,
+      }
+      try {
+        await api('/hive-gui-setup/token-cap', { method: 'PUT', body: JSON.stringify(cap) })
+        state.tokenCap = cap
+        showToast('Token caps saved', 'success')
+      } catch (err) {
+        showToast(`Failed to save: ${err.message}`, 'error')
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // SSE
+    // -------------------------------------------------------------------------
+    function connectSSE() {
+      if (sseConnection) sseConnection.close()
+      try {
+        sseConnection = new EventSource('/hive-gui-setup/sse', { headers: { Authorization: AUTH_TOKEN } })
+        sseConnection.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data)
+            handleSSEEvent(data)
+          } catch (err) {
+            console.error('SSE parse error', err)
+          }
+        }
+        sseConnection.onerror = () => {
+          showToast('Connection lost, reconnecting...', 'error')
+          setTimeout(connectSSE, 3000)
+        }
+      } catch (err) {
+        console.error('SSE connection failed', err)
+      }
+    }
+
+    function handleSSEEvent(data) {
+      if (data.type === 'tui.sync' || data.type === 'setup.completed' || data.type === 'setup.failed') {
+        loadPool()
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Render
+    // -------------------------------------------------------------------------
+    function renderAll() {
+      renderStats()
+      renderProviders()
+      renderAgents()
+      renderRotation()
+      renderCaps()
+    }
+
+    function renderStats() {
+      document.getElementById('stat-pool-count').textContent = state.pool.filter(p => p.enabled).length
+      document.getElementById('stat-agent-count').textContent = state.assignments.length
+      document.getElementById('stat-rotation').textContent = state.rotationMode
+    }
+
+    function renderProviders() {
+      const container = document.getElementById('provider-list')
+      if (state.pool.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <h3>No APIs configured</h3>
+            <p>Add your first API to get started.</p>
+          </div>
+        `
+        return
+      }
+      container.innerHTML = state.pool.map(p => `
+        <div class="provider-card">
+          <div class="name">${escapeHtml(p.providerID)}</div>
+          <div class="meta">Model: ${escapeHtml(p.modelID)}</div>
+          <div style="margin-bottom: 12px;">
+            <span class="badge ${p.enabled ? 'badge-success' : 'badge-warning'}">${p.enabled ? 'Active' : 'Disabled'}</span>
+            <span class="badge" style="background: var(--wax); color: var(--bee-brown);">Weight: ${p.weight}</span>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary" onclick="toggleProvider('${p.id}')">${p.enabled ? 'Disable' : 'Enable'}</button>
+            <button class="btn btn-danger" onclick="deleteProvider('${p.id}')">Delete</button>
+          </div>
+        </div>
+      `).join('')
+    }
+
+    function renderAgents() {
+      const container = document.getElementById('agent-list')
+      const agents = [
+        { name: 'researcher', role: 'Research' },
+        { name: 'coder', role: 'Implementation' },
+        { name: 'reviewer', role: 'Quality' },
+        { name: 'tester', role: 'Testing' },
+        { name: 'documenter', role: 'Docs' },
+        { name: 'debugger', role: 'Debugging' },
+        { name: 'architect', role: 'Design' },
+      ]
+      container.innerHTML = agents.map(agent => {
+        const assignment = state.assignments.find(a => a.agent === agent.name)
+        const poolEntry = assignment ? state.pool.find(p => p.id === assignment.poolEntryID) : null
+        return `
+          <div class="agent-card">
+            <div class="name">${agent.name}</div>
+            <div class="role">${agent.role}</div>
+            ${poolEntry ? `
+              <div style="margin-bottom: 12px; padding: 8px; background: var(--combo-light); border-radius: var(--radius-md);">
+                <div style="font-size: 13px; font-weight: 600;">Assigned: ${escapeHtml(poolEntry.providerID)}</div>
+                <div style="font-size: 12px; color: var(--bee-brown);">${escapeHtml(poolEntry.modelID)}</div>
+              </div>
+              <button class="btn btn-danger" onclick="unassignAgent('${agent.name}')">Unassign</button>
+            ` : `
+              <div style="margin-bottom: 12px; padding: 8px; background: var(--combo-light); border-radius: var(--radius-md);">
+                <div style="font-size: 13px; color: var(--bee-brown);">Using default pool</div>
+              </div>
+              <button class="btn btn-secondary" onclick="assignAgentFromUI('${agent.name}')">Assign API</button>
+            `}
+          </div>
+        `
+      }).join('')
+    }
+
+    function renderRotation() {
+      document.getElementById('rotation-mode').value = state.rotationMode
+    }
+
+    function renderCaps() {
+      document.getElementById('cap-max-input').value = state.tokenCap.maxInput || 0
+      document.getElementById('cap-max-output').value = state.tokenCap.maxOutput || 0
+      document.getElementById('cap-max-total').value = state.tokenCap.maxTotal || 0
+      document.getElementById('cap-warn-at').value = state.tokenCap.warnAt || 0.8
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+    function escapeHtml(str) {
+      if (str == null) return ''
+      return String(str).replace(/[&<>"']/g, (m) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m] || m)
+    }
+
+    function refreshAll() {
+      loadPool()
+      showToast('Refreshed', 'success')
+    }
+
+    async function toggleProvider(id) {
+      const entry = state.pool.find(p => p.id === id)
+      if (!entry) return
+      try {
+        await api(`/hive-gui-setup/pool/${encodeURIComponent(id)}`, {
+          method: 'PUT',
+          body: JSON.stringify({ enabled: !entry.enabled }),
+        })
+        loadPool()
+      } catch (err) {
+        showToast(`Failed to toggle: ${err.message}`, 'error')
+      }
+    }
+
+    async function assignAgentFromUI(agentName) {
+      const enabled = state.pool.filter(p => p.enabled)
+      if (enabled.length === 0) {
+        showToast('No enabled APIs in pool', 'error')
+        return
+      }
+      const poolEntryID = enabled[0].id
+      await assignAgent(agentName, poolEntryID)
+    }
+
+    // -------------------------------------------------------------------------
+    // Init
+    // -------------------------------------------------------------------------
+    async function init() {
+      await loadPool()
+      connectSSE()
+      setInterval(loadPool, 30000)
+    }
+
+    init()
+  </script>
+</body>
+</html>
