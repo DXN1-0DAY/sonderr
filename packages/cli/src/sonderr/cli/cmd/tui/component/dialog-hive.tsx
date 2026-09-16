@@ -3,11 +3,13 @@ import { useDialog } from "@tui/ui/dialog"
 import { DialogAlert } from "@tui/ui/dialog-alert"
 import { DialogSelect, type DialogSelectOption } from "@tui/ui/dialog-select"
 import { createMemo } from "solid-js"
+import { TuiConfig } from "@/config/tui"
 
 const MENU_OPTIONS = [
   { title: "Hive status", value: "status", description: "Show hive swarm status and configuration" },
   { title: "Swarm agents", value: "swarm-agents", description: "View available swarm agents" },
   { title: "Hive tools", value: "tools", description: "List the tools available inside a hive" },
+  { title: "API pool", value: "api-pool", description: "Add or view available APIs for the swarm" },
   { title: "Configuration", value: "config", description: "How to enable and tune hive mode" },
 ] as const
 
@@ -132,6 +134,35 @@ export function DialogHive() {
       "Changes take effect on the next Sonderr start.",
     ])
 
+  const handleApiPool = async () => {
+    try {
+      const cfg = await TuiConfig.get()
+      const disabled = new Set(cfg.provider?.disabled_providers ?? [])
+      const enabled = cfg.provider?.enabled_providers ? new Set(cfg.provider.enabled_providers) : undefined
+      const configured = Object.entries(cfg.provider ?? {})
+        .filter(([id]) => (enabled ? enabled.has(id) : true) && !disabled.has(id))
+        .sort((a, b) => (a[1].name ?? a[0]).localeCompare(b[1].name ?? b[0]))
+        .slice(0, 20)
+
+      const lines = [
+        "API pool for the swarm:",
+        "",
+        ...configured.map(([id, p]) => {
+          const name = p.name ?? id
+          const models = Object.keys(p.models ?? {}).length
+          return `  ${name} (${id}) — ${models} model${models === 1 ? "" : "s"}`
+        }),
+        "",
+        "To add an API, use /connect or add it to your sonderr.json config.",
+        "Example:",
+        '  { "provider": { "my-api": { "env": ["MY_API_KEY"], "api": "https://api.example.com/v1" } } }',
+      ]
+      alert("API Pool", lines)
+    } catch (err) {
+      alert("API Pool", ["Failed to load API pool.", "", String(err)])
+    }
+  }
+
   const handleSelect = (option: DialogSelectOption<string>) => {
     switch (option.value) {
       case "status":
@@ -142,6 +173,9 @@ export function DialogHive() {
         break
       case "tools":
         handleTools()
+        break
+      case "api-pool":
+        handleApiPool()
         break
       case "config":
         handleConfig()
