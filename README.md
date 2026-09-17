@@ -69,7 +69,7 @@ Before reporting done, Sonderr runs verification checklists. It catches its own 
 ### Option 1: Global command (recommended)
 
 ```bash
-git clone https://github.com/DXN1-termux/sonderr.git
+git clone https://github.com/DXN1-0DAY/sonderr.git
 cd sonderr
 ./scripts/install.sh
 ```
@@ -91,7 +91,7 @@ export PATH="$HOME/.local/bin:$PATH"
 Requires [Bun](https://bun.sh) 1.3+.
 
 ```bash
-git clone https://github.com/DXN1-termux/sonderr.git
+git clone https://github.com/DXN1-0DAY/sonderr.git
 cd sonderr
 bun install
 bun run dev
