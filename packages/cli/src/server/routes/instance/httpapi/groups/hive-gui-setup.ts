@@ -19,7 +19,7 @@ export class HiveGuiApiError extends Schema.TaggedErrorClass<HiveGuiApiError>()(
   data: Schema.Struct({
     message: Schema.optional(Schema.String),
   }),
-})
+}) {}
 
 export const HiveGuiSetupApi = HttpApi.make("hive-gui-setup")
   .add(
