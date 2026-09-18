@@ -17,6 +17,9 @@ import { branchNameHandlers } from "./handlers/branch-name"
 import { commitMessageHandlers } from "./handlers/commit-message"
 import { configConsoleHandlers } from "./handlers/config-console"
 import { enhancePromptHandlers } from "./handlers/enhance-prompt"
+import { HiveGuiSetup, node as HiveGuiSetupNode } from "@/sonderr/hive/gui-setup"
+import { hiveGuiSetupHandlers } from "./handlers/hive-gui-setup"
+import { LayerNode } from "@sonderr/core/effect/layer-node"
 import { indexingHandlers } from "./handlers/indexing"
 import { instanceReloadHandlers } from "./handlers/instance-reload"
 import { interactiveTerminalHandlers } from "./handlers/interactive-terminal"
@@ -38,6 +41,7 @@ export const provide = Layer.provide([
   commitMessageHandlers,
   configConsoleHandlers,
   enhancePromptHandlers,
+  hiveGuiSetupHandlers.pipe(Layer.provide(LayerNode.compile(HiveGuiSetupNode))),
   indexingHandlers,
   instanceReloadHandlers,
   interactiveTerminalHandlers,

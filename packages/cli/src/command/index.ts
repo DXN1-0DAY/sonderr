@@ -138,31 +138,6 @@ const layer = Layer.effect(
         },
         hints: [],
       }
-      // sonderr_change start
-      commands["hive-gui-setup"] = {
-        name: "hive-gui-setup",
-        description: "open the hive GUI setup in a browser",
-        source: "command",
-        get template() {
-          return bridge.promise(
-            Effect.gen(function* () {
-              const lines: string[] = []
-              lines.push("# Hive GUI Setup")
-              lines.push("")
-              lines.push("Open the hive GUI setup in your browser:")
-              lines.push("")
-              lines.push("```")
-              lines.push("http://localhost:4096/hive-gui-setup")
-              lines.push("```")
-              lines.push("")
-              lines.push("Or use the /hive-gui-setup slash command in the TUI.")
-              return lines.join("\n")
-            }),
-          )
-        },
-        hints: [],
-      }
-      // sonderr_change end
 
       // sonderr_change start - defer partial overrides until all command sources are registered
       const overrides: Array<{ name: string; command: Override }> = []

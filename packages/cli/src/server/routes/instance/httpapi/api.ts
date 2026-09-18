@@ -45,7 +45,7 @@ import { SessionImportApi } from "@/sonderr/server/httpapi/groups/session-import
 import { SuggestionApi } from "@/sonderr/server/httpapi/groups/suggestion"
 import { TelemetryApi } from "@/sonderr/server/httpapi/groups/telemetry"
 import { MemoryApi } from "@/sonderr/server/httpapi/groups/memory" // sonderr_change
-import { HiveGuiSetupApi } from "@/sonderr/hive/gui-setup" // sonderr_change
+import { HiveGuiSetupApi } from "@/server/routes/instance/httpapi/groups/hive-gui-setup"
 // sonderr_change end
 import { makeApi } from "@sonderr/protocol/api"
 import { LocationMiddleware } from "@sonderr/server/location"

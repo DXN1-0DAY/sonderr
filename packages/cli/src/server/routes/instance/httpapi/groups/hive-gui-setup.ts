@@ -19,7 +19,27 @@ export class HiveGuiApiError extends Schema.TaggedErrorClass<HiveGuiApiError>()(
   data: Schema.Struct({
     message: Schema.optional(Schema.String),
   }),
-})
+}) {}
+
+const ProviderPoolEntryUpdate = Schema.Struct({
+  id: Schema.optional(Schema.String),
+  providerID: Schema.optional(Schema.String),
+  modelID: Schema.optional(Schema.String),
+  auth: Schema.optional(
+    Schema.Struct({
+      type: Schema.Literals(["api", "oauth", "wellknown"]),
+      key: Schema.optional(Schema.String),
+      refresh: Schema.optional(Schema.String),
+      access: Schema.optional(Schema.String),
+      expires: Schema.optional(Schema.Number),
+      metadata: Schema.optional(Schema.Record(Schema.String, Schema.String)),
+    }),
+  ),
+  tokenCap: Schema.optional(TokenCap),
+  weight: Schema.optional(Schema.Number),
+  enabled: Schema.optional(Schema.Boolean),
+  tags: Schema.optional(Schema.Array(Schema.String)),
+}).annotate({ identifier: "HiveGuiProviderPoolEntryUpdate" })
 
 export const HiveGuiSetupApi = HttpApi.make("hive-gui-setup")
   .add(
@@ -39,7 +59,7 @@ export const HiveGuiSetupApi = HttpApi.make("hive-gui-setup")
             description: "Lightweight liveness check for the hive GUI setup service.",
           }),
         ),
-        HttpApiEndpoint.get("list", root, {
+        HttpApiEndpoint.get("list", `${root}/list`, {
           success: HiveGuiSetup,
         }).annotateMerge(
           OpenApi.annotations({
@@ -83,7 +103,7 @@ export const HiveGuiSetupApi = HttpApi.make("hive-gui-setup")
         ),
         HttpApiEndpoint.put("pool-update", `${root}/pool/:id`, {
           params: Schema.Struct({ id: Schema.String }),
-          payload: Schema.Partial(ProviderPoolEntry),
+          payload: ProviderPoolEntryUpdate,
           success: ProviderPoolEntry,
           error: HiveGuiApiError,
         }).annotateMerge(
@@ -135,6 +155,15 @@ export const HiveGuiSetupApi = HttpApi.make("hive-gui-setup")
             identifier: "hive-gui-setup.token-cap.update",
             summary: "Update global token cap",
             description: "Updates the global token cap applied to all agents and pool entries.",
+          }),
+        ),
+        HttpApiEndpoint.get("sse", `${root}/sse`, {
+          success: Schema.String.pipe(HttpApiSchema.asText({ contentType: "text/event-stream" })),
+        }).annotateMerge(
+          OpenApi.annotations({
+            identifier: "hive-gui-setup.sse",
+            summary: "Hive GUI setup SSE stream",
+            description: "Server-sent events stream for hive GUI setup changes.",
           }),
         ),
       )

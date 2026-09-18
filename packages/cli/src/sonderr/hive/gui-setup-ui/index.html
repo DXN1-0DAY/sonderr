@@ -699,7 +699,7 @@
     // -------------------------------------------------------------------------
     async function loadPool() {
       try {
-        const data = await api('/hive-gui-setup')
+        const data = await api('/hive-gui-setup/list')
         if (!data) return
         state.pool = data.pool || []
         state.assignments = data.assignments || []

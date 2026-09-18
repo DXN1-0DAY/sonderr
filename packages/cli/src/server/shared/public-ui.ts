@@ -5,8 +5,21 @@ export const PUBLIC_UI_PATHS = new Set<string>([
   "/site.webmanifest",
   "/web-app-manifest-192x192.png",
   "/web-app-manifest-512x512.png",
+  "/hive-gui-setup",
+  "/hive-gui-setup/list",
+  "/hive-gui-setup/pool",
+  "/hive-gui-setup/pool/",
+  "/hive-gui-setup/assignments",
+  "/hive-gui-setup/assignments/",
+  "/hive-gui-setup/rotation",
+  "/hive-gui-setup/token-cap",
 ])
 
 export function isPublicUIPath(method: string, pathname: string) {
-  return method === "GET" && PUBLIC_UI_PATHS.has(pathname)
+  if (method !== "GET" && method !== "POST" && method !== "PUT" && method !== "DELETE") return false
+  if (PUBLIC_UI_PATHS.has(pathname)) return true
+  for (const prefix of PUBLIC_UI_PATHS) {
+    if (prefix.endsWith("/") && pathname.startsWith(prefix)) return true
+  }
+  return false
 }

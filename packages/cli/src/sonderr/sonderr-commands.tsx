@@ -25,6 +25,9 @@ import { DialogIndexing } from "./components/dialog-indexing.js"
 import { DialogProviderUsage } from "./components/dialog-provider-usage.js"
 import { indexingEnabled } from "./indexing-feature"
 import { refreshBalance } from "./balance-refresh"
+import { Server } from "@/server/server"
+
+let hiveGuiSetupListener: Awaited<ReturnType<typeof Server.listen>> | undefined
 
 // These types are Sonderr-internal and imported at runtime
 type UseSDK = any
@@ -100,7 +103,14 @@ export function registerSonderrCommands(useSDK: () => UseSDK) {
         slashName: "hive-gui-setup",
         run: async () => {
           try {
-            const url = "http://localhost:4096/hive-gui-setup"
+            if (hiveGuiSetupListener) await hiveGuiSetupListener.stop(true)
+            try {
+              hiveGuiSetupListener = await Server.listen({ port: 4096, hostname: "localhost" })
+            } catch {
+              hiveGuiSetupListener = await Server.listen({ port: 0, hostname: "localhost" })
+            }
+            const baseUrl = hiveGuiSetupListener.url.toString().replace(/\/$/, "")
+            const url = `${baseUrl}/hive-gui-setup`
             await open(url).catch(() => undefined)
             toast.show({ message: `Opening hive GUI setup at ${url}`, variant: "success" })
           } catch (error) {

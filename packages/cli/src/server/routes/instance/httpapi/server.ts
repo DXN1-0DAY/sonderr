@@ -135,6 +135,7 @@ import { compressionLayer } from "./middleware/compression"
 import { corsVaryFix } from "./middleware/cors-vary"
 import { errorLayer } from "./middleware/error"
 import { fenceLayer } from "./middleware/fence"
+import { notFound } from "./errors"
 import { schemaErrorLayer } from "./middleware/schema-error"
 
 export const context = Context.makeUnsafe<unknown>(new Map())
@@ -219,11 +220,11 @@ const docRoute = HttpRouter.use((router) => router.add("GET", "/doc", () => Effe
 const hiveGuiSetupRoute = HttpRouter.use((router) =>
   Effect.gen(function* () {
     const fs = yield* FSUtil.Service
-    const file = path.join(import.meta.dirname, "../../../sonderr/hive/gui-setup-ui/index.html")
+    const file = path.join(import.meta.dirname, "../../../../sonderr/hive/gui-setup-ui/index.html")
     yield* router.add("GET", "/hive-gui-setup", () =>
       fs.readFile(file).pipe(
         Effect.map((body) => HttpServerResponse.raw(body, { headers: new Headers({ "content-type": "text/html" }) })),
-        Effect.catchReason("PlatformError", "NotFound", () => Effect.succeed(notFound())),
+        Effect.catchReason("PlatformError", "NotFound", () => Effect.succeed(notFound("hive-gui-setup page not found"))),
       ),
     )
   }),

@@ -14,10 +14,10 @@ export const RotationMode = Schema.Literals(["round-robin", "random", "sticky", 
 export type RotationMode = Schema.Schema.Type<typeof RotationMode>
 
 export const TokenCap = Schema.Struct({
-  maxInput: Schema.optional(Schema.Number).pipe(Schema.withDefault(() => 0)),
-  maxOutput: Schema.optional(Schema.Number).pipe(Schema.withDefault(() => 0)),
-  maxTotal: Schema.optional(Schema.Number).pipe(Schema.withDefault(() => 0)),
-  warnAt: Schema.optional(Schema.Finite).pipe(Schema.withDefault(() => 0.8)),
+  maxInput: Schema.optional(Schema.Number),
+  maxOutput: Schema.optional(Schema.Number),
+  maxTotal: Schema.optional(Schema.Number),
+  warnAt: Schema.optional(Schema.Finite),
 }).annotate({ identifier: "HiveGuiTokenCap" })
 export type TokenCap = Schema.Schema.Type<typeof TokenCap>
 
@@ -34,9 +34,9 @@ export const ProviderPoolEntry = Schema.Struct({
     metadata: Schema.optional(Schema.Record(Schema.String, Schema.String)),
   }),
   tokenCap: Schema.optional(TokenCap),
-  weight: Schema.optional(Schema.PositiveNumber).pipe(Schema.withDefault(() => 1)),
-  enabled: Schema.optional(Schema.Boolean).pipe(Schema.withDefault(() => true)),
-  tags: Schema.optional(Schema.Array(Schema.String)).pipe(Schema.withDefault(() => [])),
+  weight: Schema.optional(Schema.Number),
+  enabled: Schema.optional(Schema.Boolean),
+  tags: Schema.optional(Schema.Array(Schema.String)),
 }).annotate({ identifier: "HiveGuiProviderPoolEntry" })
 export type ProviderPoolEntry = Schema.Schema.Type<typeof ProviderPoolEntry>
 
@@ -58,14 +58,14 @@ export const AgentAssignment = Schema.Struct({
     }),
   ),
   tokenCap: Schema.optional(TokenCap),
-  tags: Schema.optional(Schema.Array(Schema.String)).pipe(Schema.withDefault(() => [])),
+  tags: Schema.optional(Schema.Array(Schema.String)),
 }).annotate({ identifier: "HiveGuiAgentAssignment" })
 export type AgentAssignment = Schema.Schema.Type<typeof AgentAssignment>
 
 export const HiveGuiSetup = Schema.Struct({
-  version: Schema.optional(Schema.Literal(1)).pipe(Schema.withDefault(() => 1)),
-  globalTokenCap: Schema.optional(TokenCap).pipe(Schema.withDefault(() => TokenCap.default)),
-  rotationMode: Schema.optional(RotationMode).pipe(Schema.withDefault(() => "round-robin")),
+  version: Schema.optional(Schema.Literal(1)),
+  globalTokenCap: Schema.optional(TokenCap),
+  rotationMode: Schema.optional(RotationMode),
   pool: Schema.Array(ProviderPoolEntry),
   assignments: Schema.Array(AgentAssignment),
   createdAt: Schema.Number,
@@ -151,5 +151,3 @@ export const node = LayerNode.make({
   ),
   deps: [FSUtil.node, Global.node],
 })
-
-export const defaultLayer = node.layer.pipe(Layer.provide(FSUtil.defaultLayer))
